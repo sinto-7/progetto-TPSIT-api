@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>CardPlay Online - Blackjack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🂡 CardPlay Online - Blackjack</h1>
+
+<div class="game">
+    <h2>Giocatore</h2>
+    <div id="player-cards" class="cards"></div>
+    <p>Punteggio: <span id="player-score">0</span></p>
+
+    <h2>Banco</h2>
+    <div id="dealer-cards" class="cards"></div>
+    <p>Punteggio: <span id="dealer-score">0</span></p>
+
+    <div class="buttons">
+        <button onclick="startGame()">Nuova Partita</button>
+        <button onclick="drawCard()">Pesca Carta</button>
+        <button onclick="stand()">Stai</button>
+    </div>
+
+    <h2 id="result"></h2>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
