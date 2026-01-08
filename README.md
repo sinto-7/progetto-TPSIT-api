@@ -53,4 +53,9 @@ Esempi di utilizzo:
 ---
 
 ## 📁 Struttura del progetto
-
+cardplay-blackjack/
+│
+├── index.html # Pagina principale
+├── style.css # Foglio di stile
+├── script.js # Logica di gioco e API
+└── README.md # Documentazione del progetto
