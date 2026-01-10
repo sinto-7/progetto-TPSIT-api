@@ -162,9 +162,9 @@ cardplay-blackjack/
 
 ---
 
-## Autore
+## Autori
 
-Progetto realizzato per il corso di TPSIT  
+Baran Ernest, Nardullo Federico, Taramelli Nicholas, Zanchi Lorenzo 
 Classe 5^Ci
 
 ---
