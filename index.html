@@ -30,21 +30,54 @@
 </div>
 
 <div class="game">
-    <h2>Giocatore</h2>
-    <div id="player-cards" class="cards"></div>
-    <p>Punteggio: <span id="player-score">0</span></p>
-
+  <!-- Puntata -->
+  <div id="betting-section" class="betting-section">
+    <h3>Piazza la tua puntata</h3>
+    <div class="bet-chips">
+      <div class="chip chip-10" onclick="addBet(10)">10</div>
+      <div class="chip chip-25" onclick="addBet(25)">25</div>
+      <div class="chip chip-50" onclick="addBet(50)">50</div>
+      <div class="chip chip-100" onclick="addBet(100)">100</div>
+      <div class="chip chip-500" onclick="addBet(500)">500</div>
+    </div>
+    <div class="current-bet">Puntata: <span id="current-bet">0</span> Dobloni</div>
+    <div class="bet-buttons">
+      <button class="btn-clear" onclick="clearBet()">Cancella</button>
+      <button class="btn-deal" onclick="deal()" id="deal-btn">Distribuisci</button>
+    </div>
+  </div>
+ 
+  <!-- Mano banco -->
+  <div class="hand-section">
     <h2>Banco</h2>
     <div id="dealer-cards" class="cards"></div>
-    <p>Punteggio: <span id="dealer-score">0</span></p>
-
-    <div class="buttons">
-        <button onclick="startGame()">Nuova Partita</button>
-        <button onclick="drawCard()">Pesca Carta</button>
-        <button onclick="stand()">Stai</button>
+    <p class="score">Punteggio: <span id="dealer-score">-</span></p>
+  </div>
+ 
+  <!-- Mano giocatore -->
+  <div id="player-section" class="hand-section">
+    <h2>Giocatore</h2>
+    <div id="player-hands-container">
+      <div id="player-cards" class="cards"></div>
     </div>
-
-    <h2 id="result"></h2>
+    <p class="score">Punteggio: <span id="player-score">-</span></p>
+  </div>
+ 
+  <!-- Bottoni gioco -->
+  <div id="game-buttons" class="buttons hidden">
+    <button class="btn-hit" onclick="hit()" id="hit-btn">Carta</button>
+    <button class="btn-stand" onclick="stand()" id="stand-btn">Stai</button>
+    <button class="btn-double" onclick="doubleDown()" id="double-btn">Raddoppia</button>
+    <button class="btn-split" onclick="split()" id="split-btn">Split</button>
+  </div>
+ 
+  <!-- Risultato -->
+  <h2 id="result"></h2>
+ 
+  <!-- Rigioca -->
+  <div id="new-game-section" class="buttons hidden">
+    <button class="btn-new" onclick="newRound()">Nuova Mano</button>
+  </div>
 </div>
 
 <script src="script.js"></script>
