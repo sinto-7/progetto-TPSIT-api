@@ -19,16 +19,6 @@
 
 </h1>
 
-<!-- Dobloni Display -->
-<div class="dobloni-display">
-  <svg viewBox="0 0 64 64">
-    <circle cx="32" cy="32" r="28" fill="#ffd700" stroke="#b8860b" stroke-width="3"/>
-    <circle cx="32" cy="32" r="22" fill="none" stroke="#b8860b" stroke-width="2"/>
-    <text x="32" y="40" font-size="24" fill="#8b6914" text-anchor="middle" font-weight="bold">D</text>
-  </svg>
-  <span id="dobloni-amount">1000</span> Dobloni
-</div>
-
 <div class="game">
   <!-- Puntata -->
   <div id="betting-section" class="betting-section">
@@ -46,7 +36,17 @@
       <button class="btn-deal" onclick="deal()" id="deal-btn">Distribuisci</button>
     </div>
   </div>
- 
+
+    <!-- Dobloni Display -->
+<div class="dobloni-display">
+<svg viewBox="0 0 64 64">
+<circle cx="32" cy="32" r="28" fill="#ffd700" stroke="#b8860b" stroke-width="3"/>
+<circle cx="32" cy="32" r="22" fill="none" stroke="#b8860b" stroke-width="2"/>
+<text x="32" y="40" font-size="24" fill="#8b6914" text-anchor="middle" font-weight="bold">D</text>
+</svg>
+<span id="dobloni-amount">1000</span> Dobloni
+</div>
+
   <!-- Mano banco -->
   <div class="hand-section">
     <h2>Banco</h2>
