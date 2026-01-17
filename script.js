@@ -229,6 +229,11 @@ async function hitSplitHand() {
 }
 
 async function stand() {
+    if (isSplit && currentHandIndex < splitHands.length - 1) {
+        await switchToNextSplitHand();
+        return;
+    }
+
     playerTurn = false;
     document.getElementById("game-buttons").classList.add("hidden");
 
