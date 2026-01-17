@@ -187,65 +187,92 @@ h1 {
 
 /* Game Buttons */
 .buttons {
-    margin-top: 20px;
+    margin-top: 25px;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
     flex-wrap: wrap;
 }
 
 .buttons button {
-    padding: 12px 25px;
-    font-size: 16px;
+    padding: 14px 30px;
+    font-size: 17px;
     cursor: pointer;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-weight: bold;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.buttons button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: width 0.3s;
+}
+
+.buttons button:hover:not(:disabled)::before {
+    width: 100%;
 }
 
 .buttons button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.buttons button:active:not(:disabled) {
+    transform: translateY(-1px);
 }
 
 .buttons button:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
+    filter: grayscale(0.5);
 }
 
 .btn-hit {
-    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    background: linear-gradient(135deg, #66bb6a, #2e7d32);
     color: white;
 }
 
 .btn-stand {
-    background: linear-gradient(135deg, #f44336, #c62828);
+    background: linear-gradient(135deg, #ef5350, #c62828);
     color: white;
 }
 
 .btn-double {
-    background: linear-gradient(135deg, #ff9800, #e65100);
+    background: linear-gradient(135deg, #ffa726, #e65100);
     color: white;
 }
 
 .btn-split {
-    background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+    background: linear-gradient(135deg, #ab47bc, #6a1b9a);
     color: white;
 }
 
 .btn-deal {
-    background: linear-gradient(135deg, #ffd700, #b8860b);
+    background: linear-gradient(135deg, #ffd700, #ff8f00);
     color: #1a1a1a;
+    font-size: 1.1em;
 }
 
 .btn-clear {
-    background: linear-gradient(135deg, #607d8b, #455a64);
+    background: linear-gradient(135deg, #78909c, #455a64);
     color: white;
 }
 
 .btn-new {
-    background: linear-gradient(135deg, #2196f3, #1565c0);
+    background: linear-gradient(135deg, #42a5f5, #1565c0);
     color: white;
 }
 
