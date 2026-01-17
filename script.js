@@ -180,6 +180,11 @@ function showGameButtons() {
 }
 
 async function hit() {
+    if (isSplit) {
+        await hitSplitHand();
+        return;
+    }
+
     const response = await fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`);
     const data = await response.json();
     const card = data.cards[0];
@@ -192,7 +197,6 @@ async function hit() {
 
     updatePlayerScore();
 
-    // Hide double and split after first hit
     document.getElementById("double-btn").classList.add("hidden");
     document.getElementById("split-btn").classList.add("hidden");
 
