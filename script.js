@@ -206,6 +206,26 @@ async function hit() {
     } else if (playerScore === 21) {
         await stand();
     }
+    
+}
+async function hitSplitHand() {
+    const response = await fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`);
+    const data = await response.json();
+    const card = data.cards[0];
+
+    splitHands[currentHandIndex].cards.push(card);
+    
+    const img = document.createElement("img");
+    img.src = card.image;
+    document.getElementById(`split-cards-${currentHandIndex}`).appendChild(img);
+
+    updateSplitScores();
+
+    if (splitHands[currentHandIndex].score > 21) {
+        await switchToNextSplitHand();
+    } else if (splitHands[currentHandIndex].score === 21) {
+        await switchToNextSplitHand();
+    }
 }
 
 async function stand() {
