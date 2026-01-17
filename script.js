@@ -352,7 +352,11 @@ async function switchToNextSplitHand() {
     
     if (currentHandIndex >= splitHands.length) {
         // All hands played, dealer's turn
-        await stand();
+        playerTurn = false;
+        document.getElementById("game-buttons").classList.add("hidden");
+        await revealDealerCard();
+        await dealerPlay();
+        determineWinner();
         return;
     }
 
@@ -360,25 +364,7 @@ async function switchToNextSplitHand() {
     document.querySelectorAll(".split-hand").forEach((el, idx) => {
         el.classList.toggle("active", idx === currentHandIndex);
     });
-
-    // Draw card for new hand
-    const response = await fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`);
-    const data = await response.json();
-    const newCard = data.cards[0];
     
-    splitHands[currentHandIndex].cards.push(newCard);
-    const newImg = document.createElement("img");
-    newImg.src = newCard.image;
-    document.getElementById(`split-cards-${currentHandIndex}`).appendChild(newImg);
-
-    playerCards = splitHands[currentHandIndex].cards;
-    updateSplitScores();
-
-    if (splitHands[currentHandIndex].score === 21) {
-        await switchToNextSplitHand();
-    }
-}
-
 async function revealDealerCard() {
     const hiddenCardEl = document.getElementById("hidden-card");
     if (hiddenCardEl && dealerHiddenCard) {
