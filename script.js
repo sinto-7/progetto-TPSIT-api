@@ -49,6 +49,8 @@ let stats = {
     pushes: 0,
     blackjacks: 0,
     bankruptcies: 0
+
+let sideBet = 0;
 };
 
 // Initialize
@@ -121,6 +123,19 @@ async function deal() {
     await dealCardWithDelay(cards[0], "player", 300);
     await dealCardWithDelay(cards[1], "dealer", 300);
     await dealCardWithDelay(cards[2], "player", 300);
+
+    if (sideBet > 0) {
+    const c1 = playerCards[0];
+    const c2 = playerCards[1];
+
+    if (c1.code === c2.code) {
+        dobloni += sideBet * 10;
+    } else if (getCardValue(c1.value) === getCardValue(c2.value)) {
+        dobloni += sideBet * 5;
+    }
+    sideBet = 0;
+    document.getElementById("sidebet").textContent = "0";
+}
     
     // Dealer's hidden card
     dealerHiddenCard = cards[3];
@@ -613,6 +628,15 @@ function loadGame() {
     const b = localStorage.getItem("lastBet");
     if (d) dobloni = parseInt(d);
     if (b) currentBet = parseInt(b);
+}
+
+function addSideBet(amount) {
+    if (dobloni >= amount) {
+        sideBet += amount;
+        dobloni -= amount;
+        document.getElementById("sidebet").textContent = sideBet;
+        updateDobloniDisplay();
+    }
 }
 
 // Keyboard controls
