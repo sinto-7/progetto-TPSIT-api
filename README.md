@@ -83,7 +83,7 @@ Endpoints utilizzati:
 
 ## Struttura del progetto
 
-cardplay-blackjack/
+cardplay-blackjack
 │
 ├── index.html          # Pagina principale con struttura HTML
 ├── style.css           # Foglio di stile esterno con layout e design
