@@ -36,6 +36,8 @@ let dealerScore = 0;
 let dealerHiddenCard = null;
 let gameInProgress = false;
 let playerTurn = true;
+let insuranceBet = 0;
+
 
 // Split state
 let isSplit = false;
@@ -79,6 +81,10 @@ async function deal() {
     if (currentBet === 0) {
         alert("Devi piazzare una puntata!");
         return;
+        if (dealerCards[0].value === "ACE") {
+            showInsurance();
+        }
+
     }
 
     // Deduct bet from dobloni
@@ -418,6 +424,11 @@ async function revealDealerCard() {
         img.src = dealerHiddenCard.image;
         hiddenCardEl.replaceWith(img);
     }
+    if (dealerScore === 21 && insuranceBet > 0) {
+        dobloni += insuranceBet * 3;
+    }
+    insuranceBet = 0;
+
     updateDealerScore();
 }
 
@@ -438,6 +449,34 @@ async function dealerPlay() {
         updateDealerScore();
     }
 }
+
+function showInsurance() {
+    const div = document.createElement("div");
+    div.className = "insurance-prompt";
+    div.innerHTML = `
+        <p>Assicurazione disponibile (½ puntata)</p>
+        <button onclick="takeInsurance()">Sì</button>
+        <button onclick="skipInsurance()">No</button>
+    `;
+    document.querySelector(".game").prepend(div);
+}
+
+function takeInsurance() {
+    insuranceBet = currentBet / 2;
+    dobloni -= insuranceBet;
+    updateDobloniDisplay();
+    removeInsurance();
+}
+
+function skipInsurance() {
+    insuranceBet = 0;
+    removeInsurance();
+}
+
+function removeInsurance() {
+    document.querySelector(".insurance-prompt")?.remove();
+}
+
 
 function determineWinner() {
     if (isSplit) {
