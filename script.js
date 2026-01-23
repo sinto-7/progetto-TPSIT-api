@@ -539,8 +539,6 @@ function endGame(result, message) {
 }
 
 function newRound() {
-    currentBet = 0;
-    document.getElementById("current-bet").textContent = "0";
     
     // Reset split container if used
     const container = document.getElementById("player-hands-container");
@@ -636,6 +634,31 @@ function addSideBet(amount) {
         dobloni -= amount;
         document.getElementById("sidebet").textContent = sideBet;
         updateDobloniDisplay();
+    }
+}
+function repeatBet() {
+    const lastBet = parseInt(localStorage.getItem("lastBet")) || 0;
+
+    if (lastBet === 0) return;
+
+    if (dobloni >= lastBet) {
+        currentBet = lastBet;
+        document.getElementById("current-bet").textContent = currentBet;
+    } else {
+        alert("Dobloni insufficienti per ripetere la puntata");
+    }
+}
+
+function doubleRepeatBet() {
+    const lastBet = parseInt(localStorage.getItem("lastBet")) || 0;
+
+    if (lastBet === 0) return;
+
+    if (dobloni >= lastBet * 2) {
+        currentBet = lastBet * 2;
+        document.getElementById("current-bet").textContent = currentBet;
+    } else {
+        alert("Dobloni insufficienti per raddoppiare la puntata");
     }
 }
 
