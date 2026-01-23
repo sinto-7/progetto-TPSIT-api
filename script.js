@@ -38,7 +38,6 @@ let gameInProgress = false;
 let playerTurn = true;
 let insuranceBet = 0;
 
-
 // Split state
 let isSplit = false;
 let splitHands = [];
@@ -80,10 +79,6 @@ async function deal() {
     if (currentBet === 0) {
         alert("Devi piazzare una puntata!");
         return;
-        if (dealerCards[0].value === "ACE") {
-            showInsurance();
-        }
-
     }
 
     // Deduct bet from dobloni
@@ -129,18 +124,20 @@ async function deal() {
     await dealCardWithDelay(cards[1], "dealer", 300);
     await dealCardWithDelay(cards[2], "player", 300);
 
+    // Check sidebet BEFORE dealing hidden card
     if (sideBet > 0) {
-    const c1 = playerCards[0];
-    const c2 = playerCards[1];
+        const c1 = playerCards[0];
+        const c2 = playerCards[1];
 
-    if (c1.code === c2.code) {
-        dobloni += sideBet * 10;
-    } else if (getCardValue(c1.value) === getCardValue(c2.value)) {
-        dobloni += sideBet * 5;
+        if (c1.code === c2.code) {
+            dobloni += sideBet * 10;
+        } else if (getCardValue(c1.value) === getCardValue(c2.value)) {
+            dobloni += sideBet * 5;
+        }
+        sideBet = 0;
+        document.getElementById("sidebet").textContent = "0";
+        updateDobloniDisplay();
     }
-    sideBet = 0;
-    document.getElementById("sidebet").textContent = "0";
-}
     
     // Dealer's hidden card
     dealerHiddenCard = cards[3];
@@ -153,7 +150,13 @@ async function deal() {
 
     // Calculate initial scores
     updatePlayerScore();
-    document.getElementById("dealer-score").textContent = "?";
+    updateDealerScore(); // Calculate dealer score (including hidden)
+    document.getElementById("dealer-score").textContent = "?"; // But display as ?
+
+    // Check for insurance if dealer shows ACE
+    if (dealerCards[0].value === "ACE") {
+        showInsurance();
+    }
 
     // Check for blackjack
     if (playerScore === 21) {
@@ -238,8 +241,8 @@ async function hit() {
     } else if (playerScore === 21) {
         await stand();
     }
-    
 }
+
 async function hitSplitHand() {
     const response = await fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`);
     const data = await response.json();
@@ -415,7 +418,6 @@ async function switchToNextSplitHand() {
     }
 }
 
-    
 async function revealDealerCard() {
     const hiddenCardEl = document.getElementById("hidden-card");
     if (hiddenCardEl && dealerHiddenCard) {
@@ -423,12 +425,16 @@ async function revealDealerCard() {
         img.src = dealerHiddenCard.image;
         hiddenCardEl.replaceWith(img);
     }
+    
+    // Check insurance payout
     if (dealerScore === 21 && insuranceBet > 0) {
         dobloni += insuranceBet * 3;
+        updateDobloniDisplay();
     }
     insuranceBet = 0;
 
     updateDealerScore();
+    document.getElementById("dealer-score").textContent = dealerScore;
 }
 
 async function dealerPlay() {
@@ -476,7 +482,6 @@ function removeInsurance() {
     document.querySelector(".insurance-prompt")?.remove();
 }
 
-
 function determineWinner() {
     if (isSplit) {
         determineSplitWinner();
@@ -518,6 +523,12 @@ function determineSplitWinner() {
 
     dobloni += totalWinnings;
     updateDobloniDisplay();
+    
+    stats.hands++;
+    if (totalWinnings > currentBet) stats.wins++;
+    if (totalWinnings < currentBet) stats.losses++;
+    if (totalWinnings === currentBet) stats.pushes++;
+    saveStats();
     saveGame();
 
     const resultEl = document.getElementById("result");
@@ -540,44 +551,41 @@ function endGame(result, message) {
             winnings = currentBet * 2.5; // 3:2 payout
             resultEl.innerHTML = icons.blackjack + " " + message;
             resultEl.className = "blackjack";
+            stats.blackjacks++;
+            stats.wins++;
             break;
         case "win":
             winnings = currentBet * 2;
             resultEl.innerHTML = icons.win + " " + message;
             resultEl.className = "win";
+            stats.wins++;
             break;
         case "lose":
             winnings = 0;
             resultEl.innerHTML = icons.lose + " " + message;
             resultEl.className = "lose";
+            stats.losses++;
             break;
         case "push":
             winnings = currentBet; // Return bet
             resultEl.innerHTML = icons.draw + " " + message;
             resultEl.className = "push";
+            stats.pushes++;
             break;
-
-        stats.hands++;
-
-        if (result === "win" || result === "blackjack") stats.wins++;
-        if (result === "lose") stats.losses++;
-        if (result === "push") stats.pushes++;
-        if (result === "blackjack") stats.blackjacks++;
-        
-        saveStats();
-        saveGame();
-
     }
+
+    stats.hands++;
+    saveStats();
 
     dobloni += winnings;
     updateDobloniDisplay();
+    saveGame();
 
     document.getElementById("game-buttons").classList.add("hidden");
     document.getElementById("new-game-section").classList.remove("hidden");
 }
 
 function newRound() {
-    
     // Reset split container if used
     const container = document.getElementById("player-hands-container");
     container.innerHTML = '<div id="player-cards" class="cards"></div>';
@@ -593,9 +601,9 @@ function newRound() {
     document.getElementById("new-game-section").classList.add("hidden");
     
     if (dobloni <= 0) {
-    stats.bankruptcies++;
-    saveStats();
-    showBankruptcy();
+        stats.bankruptcies++;
+        saveStats();
+        showBankruptcy();
     }
 }
 
@@ -642,28 +650,43 @@ function updatePlayerScore() {
 
 function updateDealerScore() {
     dealerScore = calculateScore(dealerCards);
-    document.getElementById("dealer-score").textContent = dealerScore;
 }
 
 function saveStats() {
-    localStorage.setItem("blackjackStats", JSON.stringify(stats));
+    try {
+        localStorage.setItem("blackjackStats", JSON.stringify(stats));
+    } catch (e) {
+        console.log("Impossibile salvare le statistiche");
+    }
 }
 
 function loadStats() {
-    const saved = localStorage.getItem("blackjackStats");
-    if (saved) stats = JSON.parse(saved);
+    try {
+        const saved = localStorage.getItem("blackjackStats");
+        if (saved) stats = JSON.parse(saved);
+    } catch (e) {
+        console.log("Impossibile caricare le statistiche");
+    }
 }
 
 function saveGame() {
-    localStorage.setItem("dobloni", dobloni);
-    localStorage.setItem("lastBet", currentBet);
+    try {
+        localStorage.setItem("dobloni", dobloni);
+        localStorage.setItem("lastBet", currentBet);
+    } catch (e) {
+        console.log("Impossibile salvare il gioco");
+    }
 }
 
 function loadGame() {
-    const d = localStorage.getItem("dobloni");
-    const b = localStorage.getItem("lastBet");
-    if (d) dobloni = parseInt(d);
-    if (b) currentBet = parseInt(b);
+    try {
+        const d = localStorage.getItem("dobloni");
+        const b = localStorage.getItem("lastBet");
+        if (d) dobloni = parseInt(d);
+        if (b) currentBet = parseInt(b);
+    } catch (e) {
+        console.log("Impossibile caricare il gioco");
+    }
 }
 
 function addSideBet(amount) {
@@ -674,29 +697,40 @@ function addSideBet(amount) {
         updateDobloniDisplay();
     }
 }
+
 function repeatBet() {
     const lastBet = parseInt(localStorage.getItem("lastBet")) || 0;
 
-    if (lastBet === 0) return;
+    if (lastBet === 0) {
+        newRound();
+        return;
+    }
 
     if (dobloni >= lastBet) {
         currentBet = lastBet;
         document.getElementById("current-bet").textContent = currentBet;
+        newRound();
     } else {
         alert("Dobloni insufficienti per ripetere la puntata");
+        newRound();
     }
 }
 
-function doubleRepeatBet() {
+function doubleBet() {
     const lastBet = parseInt(localStorage.getItem("lastBet")) || 0;
 
-    if (lastBet === 0) return;
+    if (lastBet === 0) {
+        newRound();
+        return;
+    }
 
     if (dobloni >= lastBet * 2) {
         currentBet = lastBet * 2;
         document.getElementById("current-bet").textContent = currentBet;
+        newRound();
     } else {
         alert("Dobloni insufficienti per raddoppiare la puntata");
+        newRound();
     }
 }
 
