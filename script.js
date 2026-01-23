@@ -52,8 +52,10 @@ let stats = {
 };
 
 // Initialize
-updateDobloniDisplay();
 loadStats();
+loadGame();
+updateDobloniDisplay();
+document.getElementById("current-bet").textContent = currentBet;
 
 function updateDobloniDisplay() {
     document.getElementById("dobloni-amount").textContent = dobloni;
@@ -463,6 +465,7 @@ function determineSplitWinner() {
 
     dobloni += totalWinnings;
     updateDobloniDisplay();
+    saveGame();
 
     const resultEl = document.getElementById("result");
     resultEl.innerHTML = results.join(" | ");
@@ -509,6 +512,7 @@ function endGame(result, message) {
         if (result === "blackjack") stats.blackjacks++;
         
         saveStats();
+        saveGame();
 
     }
 
@@ -543,6 +547,7 @@ function newRound() {
         updateDobloniDisplay();
         alert("Sei rimasto senza Dobloni! Ti diamo 1000 Dobloni per ricominciare.");
     }
+    saveGame();
 }
 
 function getCardValue(value) {
@@ -592,6 +597,18 @@ function saveStats() {
 function loadStats() {
     const saved = localStorage.getItem("blackjackStats");
     if (saved) stats = JSON.parse(saved);
+}
+
+function saveGame() {
+    localStorage.setItem("dobloni", dobloni);
+    localStorage.setItem("lastBet", currentBet);
+}
+
+function loadGame() {
+    const d = localStorage.getItem("dobloni");
+    const b = localStorage.getItem("lastBet");
+    if (d) dobloni = parseInt(d);
+    if (b) currentBet = parseInt(b);
 }
 
 // Keyboard controls
