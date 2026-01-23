@@ -43,6 +43,7 @@ let insuranceBet = 0;
 let isSplit = false;
 let splitHands = [];
 let currentHandIndex = 0;
+let sideBet = 0;
 
 let stats = {
     hands: 0,
@@ -51,8 +52,6 @@ let stats = {
     pushes: 0,
     blackjacks: 0,
     bankruptcies: 0
-
-let sideBet = 0;
 };
 
 // Initialize
