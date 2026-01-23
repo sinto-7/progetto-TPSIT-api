@@ -1,95 +1,131 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>   
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CardPlay Online - Blackjack</title>
-    <link rel="stylesheet" href="style.css">  
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CardPlay Online - Blackjack</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<p class="rules">Blackjack paga 3:2 – Banco pesca fino a 17</p>
-<h1>
-  <svg class="icon" viewBox="0 0 64 64" fill="white">
-    <rect x="8" y="4" width="48" height="56" rx="6" ry="6" fill="white" stroke="black" stroke-width="2"/>
-    <text x="14" y="22" font-size="14" fill="black" font-weight="bold">A</text>
-    <text x="32" y="40" font-size="20" fill="black">♠</text>
-  </svg>
-  CardPlay Online - Blackjack
-</h1>
+  <h1>
+    <svg class="icon" viewBox="0 0 64 64" fill="white">
+      <rect x="8" y="4" width="48" height="56" rx="6" ry="6" fill="white" stroke="black" stroke-width="2"/>
+      <text x="14" y="22" font-size="14" fill="black" font-weight="bold">A</text>
+      <text x="32" y="40" font-size="20" fill="black">♠</text>
+    </svg>
+    CardPlay Online - Blackjack
+  </h1>
 
-<div class="game">
-  <!-- Puntata -->
-  <div id="betting-section" class="betting-section">
-    <h3>Piazza la tua puntata</h3>
-    <div class="bet-chips">
-      <div class="chip chip-10" onclick="addBet(10)">10</div>
-      <div class="chip chip-25" onclick="addBet(25)">25</div>
-      <div class="chip chip-50" onclick="addBet(50)">50</div>
-      <div class="chip chip-100" onclick="addBet(100)">100</div>
-      <div class="chip chip-500" onclick="addBet(500)">500</div>
+  <div class="game">
+
+    <div class="top-controls">
+      <div class="dobloni-display">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="28" fill="#ffd700" stroke="#b8860b" stroke-width="3"/>
+          <circle cx="32" cy="32" r="22" fill="none" stroke="#b8860b" stroke-width="2"/>
+          <text x="32" y="40" font-size="24" fill="#8b6914" text-anchor="middle" font-weight="bold">D</text>
+        </svg>
+        <span><span id="dobloni-amount">1000</span> Dobloni</span>
+      </div>
+
+      <div class="control-buttons">
+        <button class="btn-new" id="toggle-stats-btn" type="button" style="padding: 10px 20px; font-size: 14px;">Statistiche</button>
+        <button class="btn-clear" id="reset-stats-btn" type="button" style="padding: 10px 20px; font-size: 14px;">Reset Stats</button>
+      </div>
     </div>
-    <div class="current-bet">Sidebet: <span id="sidebet">0</span> Dobloni</div>
-    <button onclick="addSideBet(10)">Sidebet +10</button>
-    <div class="current-bet">Puntata: <span id="current-bet">0</span> Dobloni</div>
-    <div class="bet-buttons">
-      <button class="btn-clear" onclick="clearBet()">Cancella</button>
-      <button class="btn-deal" onclick="deal()" id="deal-btn">Distribuisci</button>
+
+    <!-- Stats panel -->
+    <div id="stats-panel" class="stats-panel hidden">
+      <div style="margin-bottom: 12px;">
+        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 8px;">Andamento</div>
+        <div class="mini-chart">
+          <div id="bar-win" class="bar-win" style="width:0%"></div>
+          <div id="bar-push" class="bar-push" style="width:0%"></div>
+          <div id="bar-lose" class="bar-lose" style="width:0%"></div>
+        </div>
+        <div style="font-size: 0.7rem; color: rgba(255,255,255,0.6); margin-top: 6px;">Win / Push / Lose</div>
+      </div>
+
+      <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 10px;">
+        Scorciatoie: <span style="color: rgba(255,255,255,0.8); font-weight: 600;">H</span>=Carta, <span style="color: rgba(255,255,255,0.8); font-weight: 600;">S</span>=Stai, <span style="color: rgba(255,255,255,0.8); font-weight: 600;">D</span>=Raddoppia
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Mani giocate</div><div class="stat-value" id="stat-hands">0</div></div>
+        <div class="stat-card"><div class="stat-label">Vittorie</div><div class="stat-value" id="stat-wins">0</div></div>
+        <div class="stat-card"><div class="stat-label">Sconfitte</div><div class="stat-value" id="stat-losses">0</div></div>
+        <div class="stat-card"><div class="stat-label">Pareggi</div><div class="stat-value" id="stat-pushes">0</div></div>
+        <div class="stat-card"><div class="stat-label">Winrate</div><div class="stat-value" id="stat-winrate">0%</div></div>
+        <div class="stat-card"><div class="stat-label">Blackjack</div><div class="stat-value" id="stat-blackjacks">0</div></div>
+        <div class="stat-card"><div class="stat-label">Sballi (bust)</div><div class="stat-value" id="stat-busts">0</div></div>
+        <div class="stat-card"><div class="stat-label">Profitto totale</div><div class="stat-value" id="stat-profit">0</div></div>
+        <div class="stat-card"><div class="stat-label">Split fatti</div><div class="stat-value" id="stat-splits">0</div></div>
+        <div class="stat-card"><div class="stat-label">Double down</div><div class="stat-value" id="stat-doubles">0</div></div>
+        <div class="stat-card"><div class="stat-label">Puntata totale</div><div class="stat-value" id="stat-wagered">0</div></div>
+        <div class="stat-card"><div class="stat-label">Ultimo agg.</div><div class="stat-value" id="stat-updated" style="font-size: 0.9rem;">-</div></div>
+      </div>
+
+      <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+        <button class="btn-deal" type="button" id="export-stats-btn" style="padding: 10px 20px; font-size: 14px;">Esporta (JSON)</button>
+        <button class="btn-clear" type="button" id="import-stats-btn" style="padding: 10px 20px; font-size: 14px;">Importa (JSON)</button>
+      </div>
+    </div>
+
+    <!-- Puntata -->
+    <div id="betting-section" class="betting-section">
+      <h3>Piazza la tua puntata</h3>
+      <div class="bet-chips">
+        <div class="chip chip-10" id="chip-10">10</div>
+        <div class="chip chip-25" id="chip-25">25</div>
+        <div class="chip chip-50" id="chip-50">50</div>
+        <div class="chip chip-100" id="chip-100">100</div>
+        <div class="chip chip-500" id="chip-500">500</div>
+      </div>
+      <div class="current-bet">Puntata: <span id="current-bet">0</span> Dobloni</div>
+      <div class="bet-buttons">
+        <button class="btn-clear" id="clear-btn">Cancella</button>
+        <button class="btn-deal" id="deal-btn">Distribuisci</button>
+      </div>
+    </div>
+
+    <!-- Mano banco -->
+    <div class="hand-section">
+      <h2>Banco</h2>
+      <div id="dealer-cards" class="cards"></div>
+      <p class="score">Punteggio: <span id="dealer-score">-</span></p>
+    </div>
+
+    <!-- Mano giocatore -->
+    <div id="player-section" class="hand-section">
+      <h2>Giocatore</h2>
+      <div id="player-hands-container">
+        <div id="player-cards" class="cards"></div>
+      </div>
+      <p class="score">Punteggio: <span id="player-score">-</span></p>
+    </div>
+
+    <!-- Bottoni gioco -->
+    <div id="game-buttons" class="buttons hidden">
+      <button class="btn-hit" id="hit-btn">Carta</button>
+      <button class="btn-stand" id="stand-btn">Stai</button>
+      <button class="btn-double" id="double-btn">Raddoppia</button>
+      <button class="btn-split" id="split-btn">Split</button>
+    </div>
+
+    <!-- Risultato -->
+    <h2 id="result"></h2>
+
+    <!-- Rigioca -->
+    <div id="new-game-section" class="buttons hidden">
+      <button class="btn-clear" id="repeat-bet-btn">Ripeti Puntata</button>
+      <button class="btn-new" id="new-round-btn">Nuova Mano</button>
+      <button class="btn-double" id="double-bet-btn">Raddoppia Puntata</button>
     </div>
   </div>
 
-  <!-- Dobloni Display -->
-<div class="dobloni-display" title="Il tuo saldo di gioco">
-<svg viewBox="0 0 64 64">
-<circle cx="32" cy="32" r="28" fill="#ffd700" stroke="#b8860b" stroke-width="3"/>
-<circle cx="32" cy="32" r="22" fill="none" stroke="#b8860b" stroke-width="2"/>
-<text x="32" y="40" font-size="24" fill="#8b6914" text-anchor="middle" font-weight="bold">D</text>
-</svg>
-<span id="dobloni-amount">1000</span> Dobloni
-</div>
+  <div id="toast" class="toast"></div>
 
-  <!-- Mano banco -->
-  <div class="hand-section">
-    <h2>Banco</h2>
-    <div id="dealer-cards" class="cards"></div>
-    <p class="score">Punteggio: <span id="dealer-score">-</span></p>
-  </div>
- 
-  <!-- Mano giocatore -->
-  <div id="player-section" class="hand-section">
-    <h2>Giocatore</h2>
-    <div id="player-hands-container">
-      <div id="player-cards" class="cards"></div>
-    </div>
-    <p class="score">Punteggio: <span id="player-score">-</span></p>
-  </div>
- 
-  <!-- Bottoni gioco -->
-  <div id="game-buttons" class="buttons hidden">
-    <button class="btn-hit" onclick="hit()" id="hit-btn">Carta</button>
-    <button class="btn-stand" onclick="stand()" id="stand-btn">Stai</button>
-    <button class="btn-double" onclick="doubleDown()" id="double-btn">Raddoppia</button>
-    <button class="btn-split" onclick="split()" id="split-btn">Split</button>
-  </div>
- 
-  <!-- Risultato -->
-  <h2 id="result"></h2>
- 
-  <!-- Rigioca -->
-  <div id="new-game-section" class="buttons hidden">
-    <button class="btn-new" onclick="newRound()">Nuova Mano</button>
-      <button onclick="repeatBet()">Ripeti Puntata</button>
-    <button onclick="doubleBet()">Raddoppia Puntata</button>
-  </div>
-</div>
-
-    <!-- Bancarotta -->
-<div id="bankruptcy" class="hidden">
-   <h2>BANCAROTTA</h2>
-   <p>Ricevi 1000 Dobloni per continuare</p>
-   <button onclick="closeBankruptcy()">Continua</button>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
