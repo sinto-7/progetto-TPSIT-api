@@ -541,13 +541,17 @@ function newRound() {
     document.getElementById("betting-section").classList.remove("hidden");
     document.getElementById("new-game-section").classList.add("hidden");
     
-    // Check if player is out of dobloni
     if (dobloni <= 0) {
-        dobloni = 1000;
-        updateDobloniDisplay();
-        alert("Sei rimasto senza Dobloni! Ti diamo 1000 Dobloni per ricominciare.");
+    stats.bankruptcies++;
+    saveStats();
+    showBankruptcy();
     }
-    saveGame();
+}
+
+function showBankruptcy() {
+    dobloni = 1000;
+    updateDobloniDisplay();
+    alert("BANCAROTTA! Ti vengono concessi 1000 Dobloni.");
 }
 
 function getCardValue(value) {
