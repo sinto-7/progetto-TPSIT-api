@@ -42,8 +42,18 @@ let isSplit = false;
 let splitHands = [];
 let currentHandIndex = 0;
 
+let stats = {
+    hands: 0,
+    wins: 0,
+    losses: 0,
+    pushes: 0,
+    blackjacks: 0,
+    bankruptcies: 0
+};
+
 // Initialize
 updateDobloniDisplay();
+loadStats();
 
 function updateDobloniDisplay() {
     document.getElementById("dobloni-amount").textContent = dobloni;
@@ -490,6 +500,16 @@ function endGame(result, message) {
             resultEl.innerHTML = icons.draw + " " + message;
             resultEl.className = "push";
             break;
+
+        stats.hands++;
+
+        if (result === "win" || result === "blackjack") stats.wins++;
+        if (result === "lose") stats.losses++;
+        if (result === "push") stats.pushes++;
+        if (result === "blackjack") stats.blackjacks++;
+        
+        saveStats();
+
     }
 
     dobloni += winnings;
@@ -563,6 +583,15 @@ function updatePlayerScore() {
 function updateDealerScore() {
     dealerScore = calculateScore(dealerCards);
     document.getElementById("dealer-score").textContent = dealerScore;
+}
+
+function saveStats() {
+    localStorage.setItem("blackjackStats", JSON.stringify(stats));
+}
+
+function loadStats() {
+    const saved = localStorage.getItem("blackjackStats");
+    if (saved) stats = JSON.parse(saved);
 }
 
 // Keyboard controls
