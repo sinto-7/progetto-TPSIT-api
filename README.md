@@ -83,12 +83,10 @@ Endpoints utilizzati:
 
 ## Struttura del progetto
 
-cardplay-blackjack
-│
-├── index.html          # Pagina principale con struttura HTML
-├── style.css           # Foglio di stile esterno con layout e design
-├── script.js           # Logica di gioco, gestione API e LocalStorage
-└── README.md           # Documentazione del progetto
+-index.html          # Pagina principale con struttura HTML
+-style.css           # Foglio di stile esterno con layout e design
+-script.js           # Logica di gioco, gestione API e LocalStorage
+-README.md           # Documentazione del progetto
 
 ---
 
